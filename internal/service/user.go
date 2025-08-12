@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/Sahil2k07/gRPC-GO/internal/authentication"
+	"github.com/Sahil2k07/gRPC-GO/internal/auth"
 	interfaces "github.com/Sahil2k07/gRPC-GO/internal/interface"
 	"github.com/Sahil2k07/gRPC-GO/internal/model"
 	"github.com/Sahil2k07/gRPC-GO/internal/util"
@@ -70,18 +70,18 @@ func (s *userService) DeleteUser(id string) error {
 	return nil
 }
 
-func (s *userService) UpdatePassword(u *authentication.UserData, req view.ChangePasswordRequest) error {
+func (s *userService) UpdatePassword(u *auth.UserData, req view.ChangePasswordRequest) error {
 	user, err := s.repo.GetUser(u.ID)
 	if err != nil {
 		return nil
 	}
 
-	err = authentication.CheckPassword(user.Password, req.OldPassword)
+	err = auth.CheckPassword(user.Password, req.OldPassword)
 	if err != nil {
 		return err
 	}
 
-	pass, err := authentication.HashPassword(req.NewPassword)
+	pass, err := auth.HashPassword(req.NewPassword)
 	if err != nil {
 		return err
 	}

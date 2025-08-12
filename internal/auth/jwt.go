@@ -1,13 +1,14 @@
-package authentication
+package auth
 
 import (
+	"net/http"
+	"strings"
+	"time"
+
 	"github.com/Sahil2k07/gRPC-GO/internal/config"
 	"github.com/Sahil2k07/gRPC-GO/internal/enum"
 	errz "github.com/Sahil2k07/gRPC-GO/internal/error"
 	"github.com/Sahil2k07/gRPC-GO/internal/model"
-	"net/http"
-	"strings"
-	"time"
 
 	"slices"
 

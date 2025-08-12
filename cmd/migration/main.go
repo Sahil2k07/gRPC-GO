@@ -17,6 +17,11 @@ func main() {
 		&model.User{}, &model.Profile{},
 	}
 
+	// Migration - 2
+	// models := []any{
+	// 	&model.InventoryGroup{}, &model.InventoryItem{},
+	// }
+
 	err := database.DB.AutoMigrate(models...)
 	if err != nil {
 		log.Errorf("Migration failed: %v", err)
