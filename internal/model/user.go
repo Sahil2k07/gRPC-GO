@@ -20,7 +20,7 @@ type (
 
 	User struct {
 		gorm.Model
-		Email    string  `gorm:"not null; unique"`
+		Email    string  `gorm:"not null; uniqueIndex"`
 		UserName string  `gorm:"not null"`
 		Password string  `gorm:"not null"`
 		Roles    string  `gorm:"default:'GUEST'"`

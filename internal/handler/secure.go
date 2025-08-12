@@ -9,8 +9,11 @@ import (
 
 func HandleSecureEndpoints(g *echo.Group) {
 	userRepo := repository.NewUserRepository()
+	inventoryGroupRepo := repository.NewInventoryGroupRepository()
 
 	userService := service.NewUserService(userRepo)
+	inventoryGroupService := service.NewInventoryGroupService(inventoryGroupRepo)
 
 	NewUserHandler(g, userService)
+	NewInventoryGroupHandler(g, inventoryGroupService)
 }

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/Sahil2k07/gRPC-GO/internal/authentication"
+	"github.com/Sahil2k07/gRPC-GO/internal/auth"
 	errz "github.com/Sahil2k07/gRPC-GO/internal/error"
 	interfaces "github.com/Sahil2k07/gRPC-GO/internal/interface"
 	"github.com/Sahil2k07/gRPC-GO/internal/view"
@@ -25,7 +25,7 @@ func (s *authService) SignUp(req view.SignUpRequest) error {
 		return errz.NewAlreadyExists("user with same email already exists")
 	}
 
-	passwordHash, err := authentication.HashPassword(req.Password)
+	passwordHash, err := auth.HashPassword(req.Password)
 	if err != nil {
 		return err
 	}
@@ -46,12 +46,12 @@ func (s *authService) SignIn(req view.SignInRequest) (string, error) {
 		return "", err
 	}
 
-	err = authentication.CheckPassword(user.Password, req.Password)
+	err = auth.CheckPassword(user.Password, req.Password)
 	if err != nil {
 		return "", errz.NewUnauthorized("Wrong email or password")
 	}
 
-	token, err := authentication.GenerateJWT(user)
+	token, err := auth.GenerateJWT(user)
 	if err != nil {
 		return "", err
 	}

@@ -1,7 +1,7 @@
 package interfaces
 
 import (
-	"github.com/Sahil2k07/gRPC-GO/internal/authentication"
+	"github.com/Sahil2k07/gRPC-GO/internal/auth"
 	"github.com/Sahil2k07/gRPC-GO/internal/model"
 	"github.com/Sahil2k07/gRPC-GO/internal/view"
 )
@@ -28,6 +28,6 @@ type (
 
 		DeleteUser(id string) error
 
-		UpdatePassword(u *authentication.UserData, req view.ChangePasswordRequest) error
+		UpdatePassword(u *auth.UserData, req view.ChangePasswordRequest) error
 	}
 )

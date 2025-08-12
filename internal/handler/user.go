@@ -1,12 +1,13 @@
 package handler
 
 import (
-	"github.com/Sahil2k07/gRPC-GO/internal/authentication"
+	"net/http"
+
+	"github.com/Sahil2k07/gRPC-GO/internal/auth"
 	"github.com/Sahil2k07/gRPC-GO/internal/enum"
 	interfaces "github.com/Sahil2k07/gRPC-GO/internal/interface"
 	"github.com/Sahil2k07/gRPC-GO/internal/util"
 	"github.com/Sahil2k07/gRPC-GO/internal/view"
-	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
@@ -18,10 +19,10 @@ type userHandler struct {
 func NewUserHandler(g *echo.Group, s interfaces.UserService) *userHandler {
 	h := &userHandler{us: s}
 
-	g.POST("/user", h.ListUsers, authentication.WithRole(enum.ADMIN))
+	g.POST("/user", h.ListUsers, auth.WithRole(enum.ADMIN))
 	g.PUT("/user", h.UpdateUser)
 	g.GET("/user/:id", h.GetUser)
-	g.DELETE("/user/:id", h.DeleteUser, authentication.WithRole(enum.ADMIN))
+	g.DELETE("/user/:id", h.DeleteUser, auth.WithRole(enum.ADMIN))
 	g.PATCH("/user/update-password", h.UpdatePassword)
 
 	return h
@@ -78,7 +79,7 @@ func (h *userHandler) DeleteUser(c echo.Context) error {
 }
 
 func (h *userHandler) UpdatePassword(c echo.Context) error {
-	user, err := authentication.GetUserFromToken(c)
+	user, err := auth.GetUserFromToken(c)
 	if err != nil {
 		return util.HandleError(c, err)
 	}
