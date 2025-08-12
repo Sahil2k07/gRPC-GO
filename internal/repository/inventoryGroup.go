@@ -79,13 +79,13 @@ func (r *inventoryGroupRepository) UpdateInventoryGroup(req view.InventoryGroupV
 
 func (r *inventoryGroupRepository) DeleteInventoryGroup(id uint) error {
 	return database.DB.Transaction(func(tx *gorm.DB) error {
-		itemQuery := tx.Model(&model.InventoryItem{}).Where("inventory_group_id = ?", id)
+		itemQuery := tx.Unscoped().Model(&model.InventoryItem{}).Where("inventory_group_id = ?", id)
 
 		if err := itemQuery.Delete(&model.InventoryItem{}).Error; err != nil {
 			return err
 		}
 
-		if err := tx.Delete(&model.InventoryGroup{}, id).Error; err != nil {
+		if err := tx.Unscoped().Delete(&model.InventoryGroup{}, id).Error; err != nil {
 			return err
 		}
 
