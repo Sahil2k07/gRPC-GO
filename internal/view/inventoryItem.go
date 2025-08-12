@@ -18,12 +18,13 @@ type (
 	}
 
 	ListInventoryItem struct {
-		Code             string     `json:"code"`
-		Name             string     `json:"name"`
-		InventoryGroup   string     `json:"inventoryGroup"`
-		InventoryGroupID *uint      `json:"inventoryGroupID"`
-		Page             PageFilter `json:"page"`
-		Sort             SortFilter `json:"sort"`
+		Code               string     `json:"code"`
+		Name               string     `json:"name"`
+		InventoryGroupCode string     `json:"inventoryGroupCode"`
+		InventoryGroupName string     `json:"inventoryGroupName"`
+		InventoryGroupID   *uint      `json:"inventoryGroupID"`
+		Page               PageFilter `json:"page"`
+		Sort               SortFilter `json:"sort"`
 	}
 
 	InventoryItemResponse struct {
