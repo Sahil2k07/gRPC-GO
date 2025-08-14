@@ -10,9 +10,13 @@ import (
 )
 
 type appConfig struct {
-	Database databaseConfig `toml:"database"`
-	JWT      jwtConfig      `toml:"jwt"`
-	Origins  []string       `toml:"origins"`
+	Database   databaseConfig `toml:"database"`
+	JWT        jwtConfig      `toml:"jwt"`
+	Origins    []string       `toml:"origins"`
+	GrpcPort   string         `toml:"grpc_port"`
+	ServerPort string         `toml:"server_port"`
+	GrpcUrl    string         `toml:"grpc_url"`
+	GrpcToken  string         `toml:"grpc_token"`
 }
 
 var (
@@ -40,7 +44,11 @@ func loadProdConfig() {
 			CookieName: os.Getenv("COOKIE_NAME"),
 			Secret:     os.Getenv("JWT_SECRET"),
 		},
-		Origins: origins,
+		Origins:    origins,
+		GrpcPort:   os.Getenv("GRPC_PORT"),
+		ServerPort: os.Getenv("SERVER_PORT"),
+		GrpcUrl:    os.Getenv("GRPC_URL"),
+		GrpcToken:  os.Getenv("GRPC_TOKEN"),
 	}
 }
 
@@ -62,6 +70,8 @@ func LoadConfig() appConfig {
 		} else {
 			loadDevConfig()
 		}
+
+		GenerateStockClient(globalConfig.GrpcUrl, globalConfig.GrpcToken)
 	})
 
 	return globalConfig
