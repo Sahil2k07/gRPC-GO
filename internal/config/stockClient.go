@@ -7,10 +7,11 @@ import (
 	"github.com/charmbracelet/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
+
+var GrpcConn *grpc.ClientConn
 
 type tokenAuth struct {
 	token string
@@ -33,13 +34,8 @@ func newTokenAuth(token string) (*tokenAuth, error) {
 	return &tokenAuth{token: token}, nil
 }
 
-var GrpcConn *grpc.ClientConn
-
 func GenerateStockClient(config grpcConfig) {
-	creds, err := credentials.NewClientTLSFromFile("certs/server.crt", "")
-	if err != nil {
-		log.Fatalf("could not load TLS certificate: %v", err)
-	}
+	creds := GetGrpcCerts()
 
 	auth, err := newTokenAuth(config.GrpcToken)
 	if err != nil {

@@ -24,7 +24,7 @@ func main() {
 	repo := repository.NewInventoryItemRepository()
 	stockService := service.NewStockService(repo)
 
-	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(config.AuthInterceptor(configs.Grpc.GrpcToken)))
+	grpcServer := grpc.NewServer(grpc.Creds(config.GetGrpcCerts()), grpc.UnaryInterceptor(config.AuthInterceptor(configs.Grpc.GrpcToken)))
 	stock.RegisterStockServiceServer(grpcServer, stockService)
 
 	log.Infof("gRPC Server starting on port:%v", configs.Grpc.GrpcPort)

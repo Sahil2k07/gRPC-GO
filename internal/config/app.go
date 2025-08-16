@@ -53,7 +53,7 @@ func LoadConfig() appConfig {
 			loadDevConfig()
 		}
 
-		GenerateStockClient(globalConfig.Grpc)
+		// GenerateStockClient(globalConfig.Grpc)
 	})
 
 	return globalConfig
