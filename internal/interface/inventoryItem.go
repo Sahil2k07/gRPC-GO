@@ -3,6 +3,7 @@ package interfaces
 import (
 	"github.com/Sahil2k07/gRPC-GO/internal/model"
 	"github.com/Sahil2k07/gRPC-GO/internal/view"
+	"gorm.io/gorm"
 )
 
 type (
@@ -13,13 +14,15 @@ type (
 
 		AddInventoryItem(req view.AddInventoryItem) error
 
-		UpdateInventoryItem(req view.UpdateInventoryItem) error
+		UpdateInventoryItem(item *model.InventoryItem, tx ...*gorm.DB) error
 
 		DeleteInventoryItem(id uint) error
 
 		ValidateExistingGroup(id uint) error
 
 		ListInventoryItems(req view.ListInventoryItem) ([]model.InventoryItem, int64, error)
+
+		GetInventoryItemsFromCodes(ids []string) ([]model.InventoryItem, error)
 	}
 
 	InventoryItemService interface {
@@ -32,5 +35,7 @@ type (
 		DeleteInventoryItem(id string) error
 
 		ListInventoryItems(req view.ListInventoryItem) (view.ListResponse, error)
+
+		UpdateInventoryItemStock(req []view.UpdateInventoryStock) error
 	}
 )

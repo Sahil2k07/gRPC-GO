@@ -38,6 +38,11 @@ type (
 		Quantity         float32 `json:"quantity"`
 		Price            float32 `json:"price"`
 	}
+
+	UpdateInventoryStock struct {
+		Code     string  `json:"code" validate:"required"`
+		Quantity float32 `json:"quantity" validate:"required"`
+	}
 )
 
 func NewInventoryItemResponse(m model.InventoryItem) InventoryItemResponse {

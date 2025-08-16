@@ -6,6 +6,7 @@ import (
 	"github.com/Sahil2k07/gRPC-GO/internal/config"
 	"github.com/Sahil2k07/gRPC-GO/internal/database"
 	stock "github.com/Sahil2k07/gRPC-GO/internal/generated/stock/proto"
+	"github.com/Sahil2k07/gRPC-GO/internal/repository"
 	"github.com/Sahil2k07/gRPC-GO/internal/service"
 	"github.com/charmbracelet/log"
 	"google.golang.org/grpc"
@@ -20,7 +21,8 @@ func main() {
 		log.Fatalf("Error starting the TCP Server: %v", err)
 	}
 
-	stockService := service.NewStockService()
+	repo := repository.NewInventoryItemRepository()
+	stockService := service.NewStockService(repo)
 
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(config.AuthInterceptor(configs.GrpcToken)))
 	stock.RegisterStockServiceServer(grpcServer, stockService)
