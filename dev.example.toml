@@ -1,6 +1,8 @@
+[server]
 server_port = ":5000"
 origins = ["http://localhost:3000", "https://example.com"]
 
+[grpc]
 grpc_port = ":6000"
 grpc_url = "localhost:6000"
 grpc_token = "5763121b0c2141eb73d3c1ddfe65a02f30e56adc2fd6f62d1a143f38dc1f3680"

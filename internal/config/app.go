@@ -3,20 +3,16 @@ package config
 import (
 	"os"
 	"path/filepath"
-	"strings"
 	"sync"
 
 	"github.com/BurntSushi/toml"
 )
 
 type appConfig struct {
-	Database   databaseConfig `toml:"database"`
-	JWT        jwtConfig      `toml:"jwt"`
-	Origins    []string       `toml:"origins"`
-	GrpcPort   string         `toml:"grpc_port"`
-	ServerPort string         `toml:"server_port"`
-	GrpcUrl    string         `toml:"grpc_url"`
-	GrpcToken  string         `toml:"grpc_token"`
+	Database databaseConfig `toml:"database"`
+	JWT      jwtConfig      `toml:"jwt"`
+	Grpc     grpcConfig     `toml:"grpc"`
+	Server   serverConfig   `toml:"server"`
 }
 
 var (
@@ -30,25 +26,11 @@ func IsProduction() bool {
 }
 
 func loadProdConfig() {
-	origins := strings.Split(os.Getenv("APP_ORIGINS"), ",")
-
 	globalConfig = appConfig{
-		Database: databaseConfig{
-			Host:     os.Getenv("DB_HOST"),
-			Port:     os.Getenv("DB_PORT"),
-			User:     os.Getenv("DB_USER"),
-			Password: os.Getenv("DB_PASSWORD"),
-			Name:     os.Getenv("DB_NAME"),
-		},
-		JWT: jwtConfig{
-			CookieName: os.Getenv("COOKIE_NAME"),
-			Secret:     os.Getenv("JWT_SECRET"),
-		},
-		Origins:    origins,
-		GrpcPort:   os.Getenv("GRPC_PORT"),
-		ServerPort: os.Getenv("SERVER_PORT"),
-		GrpcUrl:    os.Getenv("GRPC_URL"),
-		GrpcToken:  os.Getenv("GRPC_TOKEN"),
+		Database: loadDatabaseConfig(),
+		JWT:      loadProdJwtConfig(),
+		Grpc:     loadProdGrpcConfig(),
+		Server:   loadProdServerConfig(),
 	}
 }
 
@@ -71,7 +53,7 @@ func LoadConfig() appConfig {
 			loadDevConfig()
 		}
 
-		GenerateStockClient(globalConfig.GrpcUrl, globalConfig.GrpcToken)
+		GenerateStockClient(globalConfig.Grpc)
 	})
 
 	return globalConfig

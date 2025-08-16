@@ -16,7 +16,7 @@ func main() {
 	configs := config.LoadConfig()
 	database.Connect()
 
-	lis, err := net.Listen("tcp", configs.GrpcPort)
+	lis, err := net.Listen("tcp", configs.Grpc.GrpcPort)
 	if err != nil {
 		log.Fatalf("Error starting the TCP Server: %v", err)
 	}
@@ -24,10 +24,10 @@ func main() {
 	repo := repository.NewInventoryItemRepository()
 	stockService := service.NewStockService(repo)
 
-	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(config.AuthInterceptor(configs.GrpcToken)))
+	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(config.AuthInterceptor(configs.Grpc.GrpcToken)))
 	stock.RegisterStockServiceServer(grpcServer, stockService)
 
-	log.Infof("gRPC Server starting on port:%v", configs.GrpcPort)
+	log.Infof("gRPC Server starting on port:%v", configs.Grpc.GrpcPort)
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("Failed to start gRPC server: %v", err)
 	}
