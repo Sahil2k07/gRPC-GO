@@ -21,6 +21,7 @@ func NewInventoryItemHandler(g *echo.Group, s interfaces.InventoryItemService) *
 	g.POST("/inventory/item", h.AddInventoryItem)
 	g.PUT("/inventory/item", h.UpdateInventoryItem)
 	g.DELETE("/inventory/item/:id", h.DeleteInventoryItem)
+	g.PATCH("/inventory/item/stock", h.UpdateInventoryItemStock)
 
 	return h
 }
@@ -86,4 +87,18 @@ func (h *inventoryItemHandler) ListInventoryItems(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, records)
+}
+
+func (h *inventoryItemHandler) UpdateInventoryItemStock(c echo.Context) error {
+	var req []view.UpdateInventoryStock
+
+	if err := util.BindAndValidate(c, &req); err != nil {
+		return util.HandleError(c, err)
+	}
+
+	if err := h.s.UpdateInventoryItemStock(req); err != nil {
+		return util.HandleError(c, err)
+	}
+
+	return c.NoContent(http.StatusOK)
 }

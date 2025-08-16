@@ -1,6 +1,9 @@
 package service
 
 import (
+	"fmt"
+
+	errz "github.com/Sahil2k07/gRPC-GO/internal/error"
 	interfaces "github.com/Sahil2k07/gRPC-GO/internal/interface"
 	"github.com/Sahil2k07/gRPC-GO/internal/model"
 	"github.com/Sahil2k07/gRPC-GO/internal/util"
@@ -38,11 +41,24 @@ func (s *inventoryItemService) AddInventoryItem(req view.AddInventoryItem) error
 }
 
 func (s *inventoryItemService) UpdateInventoryItem(req view.UpdateInventoryItem) error {
-	if err := s.repo.ValidateExistingItem(&req.ID, req.AddInventoryItem); err != nil {
+	item, err := s.repo.GetInventoryItem(req.ID)
+	if err != nil {
 		return err
 	}
 
-	return s.repo.UpdateInventoryItem(req)
+	if req.Code != item.Code {
+		if err := s.repo.ValidateExistingItem(&req.ID, req.AddInventoryItem); err != nil {
+			return err
+		}
+	}
+
+	item.Code = req.Code
+	item.Name = req.Name
+	item.Description = req.Description
+	item.Price = req.Price
+	item.Quantity = req.Quantity
+
+	return s.repo.UpdateInventoryItem(&item)
 }
 
 func (s *inventoryItemService) DeleteInventoryItem(id string) error {
@@ -70,4 +86,47 @@ func (s *inventoryItemService) ListInventoryItems(req view.ListInventoryItem) (v
 	}
 
 	return response, nil
+}
+
+func (s *inventoryItemService) UpdateInventoryItemStock(req []view.UpdateInventoryStock) error {
+	if len(req) == 0 {
+		return nil
+	}
+
+	var codes []string
+	for _, r := range req {
+		codes = append(codes, r.Code)
+	}
+
+	items, err := s.repo.GetInventoryItemsFromCodes(codes)
+	if err != nil {
+		return err
+	}
+
+	itemMap := make(map[string]*model.InventoryItem)
+	for i := range items {
+		itemMap[items[i].Code] = &items[i]
+	}
+
+	for _, r := range req {
+		item, exists := itemMap[r.Code]
+		if !exists {
+			return errz.NewNotFound(fmt.Sprintf("inventory item with Code %s not found", r.Code))
+		}
+
+		newQty := item.Quantity + r.Quantity
+		if newQty < 0 {
+			return errz.NewValidation(fmt.Sprintf("insufficient stock for item code %s", r.Code))
+		}
+
+		item.Quantity = newQty
+	}
+
+	for _, item := range itemMap {
+		if err := s.repo.UpdateInventoryItem(item); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/Sahil2k07/gRPC-GO/internal/model"
 	"github.com/Sahil2k07/gRPC-GO/internal/util"
 	"github.com/Sahil2k07/gRPC-GO/internal/view"
+	"gorm.io/gorm"
 )
 
 type inventoryItemRepository struct{}
@@ -84,19 +85,12 @@ func (r *inventoryItemRepository) AddInventoryItem(req view.AddInventoryItem) er
 	return nil
 }
 
-func (r *inventoryItemRepository) UpdateInventoryItem(req view.UpdateInventoryItem) error {
-	item, err := r.GetInventoryItem(req.ID)
-	if err != nil {
-		return err
+func (r *inventoryItemRepository) UpdateInventoryItem(item *model.InventoryItem, tx ...*gorm.DB) error {
+	db := database.DB
+	if len(tx) > 0 {
+		db = tx[0]
 	}
-
-	item.Code = req.Code
-	item.Name = req.Name
-	item.Description = req.Description
-	item.Quantity = req.Quantity
-	item.Price = req.Price
-
-	if err := database.DB.Save(&item).Error; err != nil {
+	if err := db.Save(item).Error; err != nil {
 		return err
 	}
 
@@ -149,4 +143,14 @@ func (r *inventoryItemRepository) ListInventoryItems(req view.ListInventoryItem)
 	}
 
 	return items, count, nil
+}
+
+func (r *inventoryItemRepository) GetInventoryItemsFromCodes(ids []string) ([]model.InventoryItem, error) {
+	var items []model.InventoryItem
+
+	if err := database.DB.Model(&model.InventoryItem{}).Where("code IN ?", ids).Find(&items).Error; err != nil {
+		return nil, err
+	}
+
+	return items, nil
 }
