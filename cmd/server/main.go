@@ -1,10 +1,11 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/Sahil2k07/gRPC-GO/internal/config"
 	"github.com/Sahil2k07/gRPC-GO/internal/database"
 	"github.com/Sahil2k07/gRPC-GO/internal/handler"
-	"net/http"
 
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -41,5 +42,5 @@ func main() {
 	}))
 	handler.HandleSecureEndpoints(secure)
 
-	e.Logger.Fatal(e.Start(":5000"))
+	e.Logger.Fatal(e.Start(configs.ServerPort))
 }

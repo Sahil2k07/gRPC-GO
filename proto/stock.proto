@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package stock;
+
+option go_package = "github.com/Sahil2k07/gRPC-GO/internal/generated/stock";
+
+message ListStockItemRequest {
+    int32 pageNum = 1;
+    int32 pageSize = 2;
+
+    optional string code = 3;
+    optional string name = 4;
+    optional string groupCode = 5;
+    optional string groupName = 6;
+}
+
+message StockItem {
+    string code = 1;
+    string name = 2;
+    string description = 3;
+}
+
+message StockItemResponse {
+    repeated StockItem items = 1;
+    int64 totalRecords = 2;
+}
+
+message StockItemRequest {
+    string code = 1;
+    float quantity = 2;
+}
+
+message StockAvailabilityRequest {
+    repeated StockItemRequest items = 1;
+}
+
+message StockAvailability {
+    string code = 1;
+    string name = 2;
+    bool available = 3;
+    optional float availableQuantity = 4; 
+}
+
+message StockAvailabilityResponse {
+    repeated StockAvailability items = 1;
+}
+
+message ConsumeStockRequest {
+    repeated StockItemRequest items = 1;
+}
+
+message StockConsumption {
+    string code = 1;
+    bool success = 2;
+    optional string message = 3;
+}
+
+message StockConsumptionResponse {
+    repeated StockConsumption items = 1;
+}
+
+service StockService {
+    rpc ListStockItems(ListStockItemRequest) returns (StockItemResponse);
+
+    rpc CheckStockAvailability(StockAvailabilityRequest) returns (StockAvailabilityResponse);
+
+    rpc ConsumeStock(ConsumeStockRequest) returns (StockConsumptionResponse);
+}
