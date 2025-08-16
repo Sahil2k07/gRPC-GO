@@ -1,0 +1,19 @@
+[server]
+server_port = ":5000"
+origins = ["http://localhost:3000", "https://example.com"]
+
+[grpc]
+grpc_port = ":6000"
+grpc_url = "localhost:6000"
+grpc_token = "5763121b0c2141eb73d3c1ddfe65a02f30e56adc2fd6f62d1a143f38dc1f3680"
+
+[database]
+db_host = "localhost"
+db_port = "5432"
+db_user = "postgres"
+db_password = "sahil"
+db_name = "grpc-go"
+
+[jwt]
+cookie_name = "gRPC-GO-cookie"
+secret = "K3#v@9$1!pZ^mL2&uQ7*rF4)gT8_W+oB"

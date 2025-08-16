@@ -1,2 +1,7 @@
 vendor
 .env
+.vscode
+build
+dist
+
+dev.toml

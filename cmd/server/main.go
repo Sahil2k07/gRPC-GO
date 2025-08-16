@@ -23,7 +23,7 @@ func main() {
 	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(20)))
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins:     configs.Origins,
+		AllowOrigins:     configs.Server.Origins,
 		AllowMethods:     []string{echo.GET, echo.POST, echo.PUT, echo.DELETE, echo.PATCH},
 		AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 		AllowCredentials: true,
@@ -42,5 +42,5 @@ func main() {
 	}))
 	handler.HandleSecureEndpoints(secure)
 
-	e.Logger.Fatal(e.Start(configs.ServerPort))
+	e.Logger.Fatal(e.Start(configs.Server.ServerPort))
 }

@@ -35,19 +35,19 @@ func newTokenAuth(token string) (*tokenAuth, error) {
 
 var GrpcConn *grpc.ClientConn
 
-func GenerateStockClient(grpcAddr string, apiToken string) {
+func GenerateStockClient(config grpcConfig) {
 	creds, err := credentials.NewClientTLSFromFile("certs/server.crt", "")
 	if err != nil {
 		log.Fatalf("could not load TLS certificate: %v", err)
 	}
 
-	auth, err := newTokenAuth(apiToken)
+	auth, err := newTokenAuth(config.GrpcToken)
 	if err != nil {
 		log.Fatalf("Invalid API token: %v", err)
 	}
 
 	conn, err := grpc.NewClient(
-		grpcAddr,
+		config.GrpcUrl,
 		grpc.WithTransportCredentials(creds),
 		grpc.WithPerRPCCredentials(auth),
 	)
