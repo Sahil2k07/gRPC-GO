@@ -100,6 +100,7 @@ func (s *stockService) CheckStockAvailability(ctx context.Context, req *stock.St
 		mp, exists := mappings[ri.Code]
 		if exists {
 			item.AvailableQuantity = &mp.Quantity
+			item.Name = mp.Name
 
 			if ri.Quantity <= mp.Quantity {
 				item.Available = true
